@@ -9,8 +9,8 @@ output: html_document
 library(sf)
 library(rgbif)
 
-#Below line would run before I started the new project through Github; Now it won't ...
-rivco_sf <- st_read("/raw_data/cali_counties/CA_Counties.shp")
+
+rivco_sf <- st_read("../raw_data/cali_counties/CA_Counties.shp")
 #Plotting just to investigate shapefile geometry
 plot(st_geometry(rivco_sf))
 
