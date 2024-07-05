@@ -8,9 +8,12 @@ output: html_document
 ```{r Practice Shapefile}
 library(sf)
 library(rgbif)
+library(tidyverse)
 
-
-rivco_sf <- st_read("../raw_data/cali_counties/CA_Counties.shp")
+#Read in shapefile
+county_sf <- st_read("../raw_data/tl_2022_us_county/tl_2022_us_county.shp")
+rivco_sf <- county_sf |>
+  filter(NAME == "Riverside")
 #Plotting just to investigate shapefile geometry
 plot(st_geometry(rivco_sf))
 
@@ -20,9 +23,13 @@ sp_backbone <- name_backbone(name = sp_name)
 sp_key <- sp_backbone$usageKey
 
 #Converting sf geometry to wkt
-rivco_wkt <- st_as_text(st_geometry(rivco_sf))
+rivco_wkt <- rivco_sf |>
+    pull(geometry) |> 
+    st_make_valid() |> 
+    st_as_text() |>
+    check_wkt()
 
 #Query and count for coyotes within Riverside County
-occ_wkt <- occ_search(taxonKey = sp_key, geometry = rivco_wkt)
+occ_wkt <- occ_download(taxonKey = sp_key, geometry = rivco_wkt)
 occ_wkt$meta$count
 ```
